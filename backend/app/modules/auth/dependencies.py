@@ -27,13 +27,11 @@ def get_current_user(
 ) -> CurrentUser:
     settings = get_settings()
 
-    # Dev-only bypass: allow login-by-email without Firebase so we can demo
-    # locally without configuring a Firebase project. Disabled in production.
-    if (
-        settings.dev_auth_bypass
-        and settings.app_env == "development"
-        and x_dev_user
-    ):
+    # Local demo login via X-Dev-User. `dev_auth_bypass_active` is true only
+    # when DEV_AUTH_BYPASS is set and APP_ENV is development. Settings refuses
+    # to load if the flag is on in staging or production; this check still
+    # runs so a settings object built without validation cannot authenticate.
+    if settings.dev_auth_bypass_active and x_dev_user:
         user = db.query(User).filter_by(email=x_dev_user).first()
         if user is None:
             raise HTTPException(

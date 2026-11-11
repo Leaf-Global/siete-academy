@@ -32,6 +32,8 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-siete}:${POSTGRES_PASSWORD:-siete}@postgres:5432/${POSTGRES_DB:-siete_academy}
       REDIS_URL: redis://redis:6379/0
+      # Off unless .env sets DEV_AUTH_BYPASS=true for local demo.
+      DEV_AUTH_BYPASS: ${DEV_AUTH_BYPASS:-false}
     ports:
       - "8000:8000"
     depends_on:
@@ -53,6 +55,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-siete}:${POSTGRES_PASSWORD:-siete}@postgres:5432/${POSTGRES_DB:-siete_academy}
       REDIS_URL: redis://redis:6379/0
+      DEV_AUTH_BYPASS: ${DEV_AUTH_BYPASS:-false}
     depends_on:
       postgres:
         condition: service_healthy

@@ -48,6 +48,19 @@ docker compose up --build
 - Frontend en http://localhost:5173
 - Postgres en :5432, Redis en :6379
 
+### Login de demo (opt-in)
+
+El bypass de autenticación (`X-Dev-User`) arranca **apagado**. Los botones de rol en `/login` funcionan cuando el backend tiene las dos variables:
+
+```bash
+APP_ENV=development
+DEV_AUTH_BYPASS=true
+```
+
+`make demo` y `make dev-backend` las exportan. En Docker Compose el default del servicio es `DEV_AUTH_BYPASS=false`; para la demo local poné `DEV_AUTH_BYPASS=true` en `.env`.
+
+Si `DEV_AUTH_BYPASS=true` y `APP_ENV` es `staging` o `production`, el proceso no arranca (API, worker y Alembic). El entorno se lee de `APP_ENV`.
+
 ### Migraciones
 
 ```bash

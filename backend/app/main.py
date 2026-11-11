@@ -49,6 +49,14 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def _startup():
+    if settings.dev_auth_bypass_active:
+        log.warning(
+            "auth.dev_bypass_enabled",
+            extra={
+                "env": settings.app_env,
+                "detail": "X-Dev-User header is accepted for this process.",
+            },
+        )
     log.info(
         "app.startup",
         extra={"env": settings.app_env, "cors_origins": settings.cors_origins},

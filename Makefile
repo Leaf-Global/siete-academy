@@ -53,9 +53,9 @@ demo:
 	@echo "  Ctrl+C para detener ambos servicios."
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 	@echo ""
-	@DATABASE_URL="sqlite:///siete_academy.db" APP_ENV=development \
+	@DATABASE_URL="sqlite:///siete_academy.db" APP_ENV=development DEV_AUTH_BYPASS=true \
 		bash -c 'trap "kill 0" EXIT; \
-			(cd backend && DATABASE_URL="sqlite:///siete_academy.db" APP_ENV=development .venv/bin/uvicorn app.main:app --reload --host 127.0.0.1 --port 8000) & \
+			(cd backend && DATABASE_URL="sqlite:///siete_academy.db" APP_ENV=development DEV_AUTH_BYPASS=true .venv/bin/uvicorn app.main:app --reload --host 127.0.0.1 --port 8000) & \
 			($(NODE_EXPORT) && cd frontend && npm run dev -- --port 5173) & \
 			wait'
 
@@ -71,7 +71,7 @@ test-e2e:
 	$(NODE_EXPORT) && cd e2e && npm run test
 
 dev-backend:
-	cd backend && DATABASE_URL="sqlite:///siete_academy.db" APP_ENV=development \
+	cd backend && DATABASE_URL="sqlite:///siete_academy.db" APP_ENV=development DEV_AUTH_BYPASS=true \
 		.venv/bin/uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 dev-frontend:

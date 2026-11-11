@@ -62,7 +62,7 @@ Lista completa de rutas: `grep -rn "@router\.\(get\|post\|patch\|delete\|put\)" 
 
 ## Decisiones de diseño que NO debes regresar por accidente
 
-1. **Autenticación actual es un bypass** (`APP_ENV=development` only). El archivo `backend/app/modules/auth/dependencies.py` valida que en prod NO acepta el header de dev-user. No quites esa validación. Para prod real, integra Firebase Auth según `NEXT_STEPS_PROD.md` sección 2.
+1. **El bypass de auth está apagado por defecto** (`DEV_AUTH_BYPASS=false`). Se enciende solo con `DEV_AUTH_BYPASS=true` y `APP_ENV=development`. Si el flag queda en true con `APP_ENV` `staging` o `production`, `Settings` rechaza la config y el proceso no arranca. `get_current_user` además exige `dev_auth_bypass_active` antes de aceptar `X-Dev-User`. No quites ninguna de las dos comprobaciones. Para prod real, integra Firebase Auth según `NEXT_STEPS_PROD.md` sección 2.
 
 2. **Archivos se almacenan como URLs, no uploads propios.** Material de apoyo, adjuntos de comentarios, adjuntos de reviews del profesor, videos de lecciones — todo es `url: str`. El embed inline usa iframes (YouTube `-nocookie` embed; Drive/PDF viewers externos). Si agregan upload real:
    - Añadan `POST /uploads` en un módulo nuevo (p. ej. `storage`)

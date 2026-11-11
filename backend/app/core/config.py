@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,9 +13,10 @@ class Settings(BaseSettings):
     public_base_url: str = "http://localhost:5173"
     allowed_origins: str = "http://localhost:5173"
 
-    # When true, get_current_user accepts an `X-Dev-User: <email>` header
-    # and skips Firebase verification. ONLY for local demo — must be false in prod.
-    dev_auth_bypass: bool = True
+    # Accept `X-Dev-User: <email>` and skip Firebase. Off unless a local
+    # process opts in. Staging and production refuse to boot if this is true
+    # (see the validator below). `app_env` is the environment signal.
+    dev_auth_bypass: bool = False
 
     # When true, Celery runs tasks inline (no broker needed). ONLY for dev.
     celery_always_eager: bool = True
@@ -38,6 +40,30 @@ class Settings(BaseSettings):
     @property
     def cors_origins(self) -> list[str]:
         return [o.strip() for o in self.allowed_origins.split(",") if o.strip()]
+
+    @property
+    def dev_auth_bypass_active(self) -> bool:
+        """True only when the operator opted in and APP_ENV is development."""
+        return self.dev_auth_bypass and self.app_env == "development"
+
+    @model_validator(mode="after")
+    def _refuse_dev_auth_bypass_outside_development(self) -> "Settings":
+        """Fail fast when the auth bypass is armed outside development.
+
+        APP_ENV is the environment detector (`development`, `staging`,
+        `production`). Settings load at import for the API, the Celery
+        worker, and Alembic, so a bad combination stops the process before
+        it serves traffic or runs migrations. The request path also checks
+        `dev_auth_bypass_active`.
+        """
+        if self.dev_auth_bypass and self.app_env != "development":
+            raise ValueError(
+                "DEV_AUTH_BYPASS is enabled but APP_ENV is "
+                f"{self.app_env!r}. The dev auth bypass is refused outside "
+                "development. Set DEV_AUTH_BYPASS=false, or set "
+                "APP_ENV=development for local use only."
+            )
+        return self
 
 
 @lru_cache
