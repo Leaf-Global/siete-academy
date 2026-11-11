@@ -98,8 +98,9 @@ completas el flujo de aplicación hasta la página de éxito**.
 - ✅ **i18n** completo en ES/EN/PT para UI + contenido del curso
 - ✅ **4 roles** funcionales con ATS Kanban, AI draft para profesor, feedback
   con adjuntos al alumno, certificado con verificación pública
-- ✅ **Dev-auth bypass** queda activo solo con `APP_ENV=development` — en
-  prod no funciona (validado en código)
+- ✅ **Dev-auth bypass** está apagado por defecto. Se enciende solo con
+  `DEV_AUTH_BYPASS=true` y `APP_ENV=development`. Con staging o production
+  el proceso no arranca si el flag queda en true.
 
 ---
 

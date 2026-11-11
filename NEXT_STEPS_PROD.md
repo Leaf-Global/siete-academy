@@ -62,7 +62,7 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=...
 VITE_FIREBASE_APP_ID=...
 ```
 
-**Turn OFF dev auth en prod:** en el `.env` del server setear `DEV_AUTH_BYPASS=false` y `CELERY_ALWAYS_EAGER=false`. El código ya lo respeta.
+**Dev auth bypass:** el default del código, de la imagen y de Compose es `DEV_AUTH_BYPASS=false`. Con `APP_ENV=staging` o `APP_ENV=production`, `DEV_AUTH_BYPASS=true` impide que arranquen la API, el worker y Alembic. En el `.env` del server dejá `DEV_AUTH_BYPASS=false`, `CELERY_ALWAYS_EAGER=false` y `APP_ENV=production`. Un deploy que deje `APP_ENV` sin setear sigue viéndose como `development`; en ese caso el bypass solo se enciende si alguien pone `DEV_AUTH_BYPASS=true`.
 
 **Crear primer admin manualmente:**
 

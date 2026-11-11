@@ -41,7 +41,7 @@ La primera vez tarda ~2-3 min (descarga Python 3.12 + Node deps). Las siguientes
 
 ## Cómo probar cada rol
 
-En `/academy/login` verás 4 botones de **modo demo**. Cada uno te entra como un rol distinto sin contraseña (backend bypassa Firebase cuando `APP_ENV=development`).
+En `/academy/login` verás 4 botones de **modo demo**. Cada uno te entra como un rol distinto sin contraseña. El backend acepta ese acceso cuando `APP_ENV=development` y `DEV_AUTH_BYPASS=true`. `make demo` exporta las dos. Si arrancás el backend a mano, exportalas vos; sin `DEV_AUTH_BYPASS=true` el bypass queda apagado y los botones responden 401.
 
 | Rol | Email | Qué probar |
 |---|---|---|
